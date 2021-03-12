@@ -24,16 +24,16 @@ namespace ProfileBook.Services.Profile
             }
         }
 
-        public async void SaveProfile(ProfileModel profileModel)
+        // await and async
+        public void SaveProfile(ProfileModel profileModel)
         {
             if (profileModel.Id == 0)
             {
-                var id = await repository.InsertAsync(profileModel);
-                profileModel.Id = id;
+                repository.InsertAsync(profileModel);
             }
             else
             {
-                await repository.UpdateAsync(profileModel);
+                repository.UpdateAsync(profileModel);
             }
         }
 

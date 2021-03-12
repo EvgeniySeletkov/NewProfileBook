@@ -18,6 +18,7 @@ namespace ProfileBook.ViewModels
     {
         private INavigationService navigationService;
         private IProfileService profileService;
+        private IRepository repository;
 
         private ProfileModel _profile;
 
@@ -68,10 +69,12 @@ namespace ProfileBook.ViewModels
 
 
         public AddProfilePageViewModel(INavigationService navigationService,
-                                       IProfileService profileService)
+                                       IProfileService profileService,
+                                       IRepository repository)
         {
             this.navigationService = navigationService;
             this.profileService = profileService;
+            this.repository = repository;
             GalleryAction += TakePhotoFromGallery;
             CameraAction += TakePhotoWithCamera;
         }
@@ -128,27 +131,38 @@ namespace ProfileBook.ViewModels
 
         private async void OnSaveProfileTap()
         {
-            if (_profile == null)
+            //if (_profile == null)
+            //{
+            //    _profile = new ProfileModel()
+            //    {
+            //        Image = Image,
+            //        NickName = NickName,
+            //        Name = Name,
+            //        Description = Description,
+            //        Date = DateTime.Now
+            //    };
+            //}
+            //else
+            //{
+            //    _profile.Image = Image;
+            //    _profile.NickName = NickName;
+            //    _profile.Name = Name;
+            //    _profile.Description = Description;
+            //    _profile.Date = DateTime.Now;
+            //}
+
+            //profileService.SaveProfile(_profile);
+
+            _profile = new ProfileModel()
             {
-                _profile = new ProfileModel()
-                {
-                    Image = Image,
-                    NickName = NickName,
-                    Name = Name,
-                    Description = Description,
-                    Date = DateTime.Now
-                };
-            }
-            else
-            {
-                _profile.Image = Image;
-                _profile.NickName = NickName;
-                _profile.Name = Name;
-                _profile.Description = Description;
-                _profile.Date = DateTime.Now;
-            }
-            
-            profileService.SaveProfile(_profile);
+                Image = Image,
+                NickName = NickName,
+                Name = Name,
+                Description = Description,
+                Date = DateTime.Now
+            };
+
+            await repository.InsertAsync(_profile);
             await navigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(Views.MainListPage)}");
         }
 

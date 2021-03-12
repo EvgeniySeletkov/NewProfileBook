@@ -1,8 +1,10 @@
 ﻿using Prism;
 using Prism.Ioc;
 using Prism.Unity;
+using ProfileBook.Services.Authorization;
 using ProfileBook.Services.Profile;
 using ProfileBook.Services.Repository;
+using ProfileBook.Services.Validators;
 using ProfileBook.ViewModels;
 using ProfileBook.Views;
 using System;
@@ -21,12 +23,15 @@ namespace ProfileBook
         {
             //Services
             containerRegistry.RegisterInstance<IRepository>(Container.Resolve<Repository>());
+            containerRegistry.RegisterInstance<IAuthorizationService>(Container.Resolve<AuthorizationService>());
             containerRegistry.RegisterInstance<IProfileService>(Container.Resolve<ProfileService>());
+            containerRegistry.RegisterInstance<IValidators>(Container.Resolve<Validators>());
 
             //Navigation
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<SignInPage, SignInPageViewModel>();
             containerRegistry.RegisterForNavigation<MainListPage, MainListPageViewModel>();
+            //containerRegistry.RegisterForNavigation<MainPage, MainListPageViewModel>();
             containerRegistry.RegisterForNavigation<SignUpPage, SignUpPageViewModel>();
             containerRegistry.RegisterForNavigation<AddProfilePage, AddProfilePageViewModel>();
         }
@@ -36,6 +41,7 @@ namespace ProfileBook
             InitializeComponent();
 
             NavigationService.NavigateAsync($"{nameof(NavigationPage)}/{nameof(SignInPage)}");
+            //NavigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(MainListPage)}");
         }
 
         protected override void OnStart()

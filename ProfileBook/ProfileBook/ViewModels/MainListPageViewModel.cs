@@ -7,6 +7,7 @@ using ProfileBook.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -74,7 +75,8 @@ namespace ProfileBook.ViewModels
 
         private async void OnSignOutTap()
         {
-            await navigationService.GoBackAsync();
+            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "profilebook.db3"));
+            //await navigationService.NavigateAsync($"{nameof(NavigationPage)}/{nameof(SignInPage)}");
         }
     }
 }

@@ -7,9 +7,9 @@
         <StackLayout Padding="36, 36, 36, 50" HorizontalOptions="FillAndExpand">
 
             <StackLayout VerticalOptions="CenterAndExpand">
-                <Entry Placeholder="Login" />
-                <Entry Placeholder="Password" IsPassword="True" />
-                <Entry Placeholder="Confirm Password" IsPassword="True" />
+                <Entry Placeholder="Login" Text="{Binding Login}" />
+                <Entry Placeholder="Password" IsPassword="True" Text="{Binding Password}" />
+                <Entry Placeholder="Confirm Password" IsPassword="True" Text="{Binding ConfirmPassword}" />
             </StackLayout>
 
             <Button BackgroundColor="#CC6633" 

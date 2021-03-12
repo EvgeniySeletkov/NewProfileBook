@@ -3,6 +3,7 @@ using SQLite;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,7 +20,8 @@ namespace ProfileBook.Services.Repository
                 var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "profilebook.db3");
                 var database = new SQLiteAsyncConnection(path);
 
-                database.CreateTableAsync<ProfileModel>();
+                database.CreateTableAsync<UserModel>().Wait();
+                database.CreateTableAsync<ProfileModel>().Wait();
 
                 return database;
 
@@ -30,6 +32,11 @@ namespace ProfileBook.Services.Repository
         {
             return _database.Value.DeleteAsync(entity);
         }
+
+        //public Task<T> GetAsync<T>(Expression<Func<T, bool>> predicate) where T : IEntityBase, new()
+        //{
+        //    return _database.Value.FindAsync(predicate);
+        //}
 
         public Task<List<T>> GetAllAsync<T>() where T : IEntityBase, new()
         {

@@ -7,8 +7,11 @@
         <StackLayout Padding="36, 36, 36, 50" HorizontalOptions="FillAndExpand">
 
             <StackLayout VerticalOptions="CenterAndExpand">
-                <Entry x:Name="EntryLogin" Placeholder="Login" />
-                <Entry x:Name="EntryPass" Placeholder="Password" IsPassword="True" />
+                <Entry Placeholder="Login" 
+                       Text="{Binding Login}" />
+                <Entry Placeholder="Password" 
+                       IsPassword="True" 
+                       Text="{Binding Password} "/>
             </StackLayout>
 
             <StackLayout VerticalOptions="EndAndExpand">
