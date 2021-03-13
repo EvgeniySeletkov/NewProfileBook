@@ -4,6 +4,7 @@ using Prism.Unity;
 using ProfileBook.Services.Authorization;
 using ProfileBook.Services.Profile;
 using ProfileBook.Services.Repository;
+using ProfileBook.Services.Settings;
 using ProfileBook.Services.Validators;
 using ProfileBook.ViewModels;
 using ProfileBook.Views;
@@ -15,6 +16,9 @@ namespace ProfileBook
 {
     public partial class App : PrismApplication
     {
+        private ISettingsManager _settingsManager;
+        private ISettingsManager SettingsManager =>
+            _settingsManager ??= Container.Resolve<ISettingsManager>();
         public App(IPlatformInitializer initializer = null) : base(initializer) { }
 
         #region --- Overrides ---
@@ -22,11 +26,12 @@ namespace ProfileBook
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             //Services
+            containerRegistry.RegisterInstance<ISettingsManager>(Container.Resolve<SettingsManager>());
             containerRegistry.RegisterInstance<IRepository>(Container.Resolve<Repository>());
             containerRegistry.RegisterInstance<IAuthorizationService>(Container.Resolve<AuthorizationService>());
             containerRegistry.RegisterInstance<IProfileService>(Container.Resolve<ProfileService>());
             containerRegistry.RegisterInstance<IValidators>(Container.Resolve<Validators>());
-
+            
             //Navigation
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<SignInPage, SignInPageViewModel>();
@@ -40,8 +45,14 @@ namespace ProfileBook
         {
             InitializeComponent();
 
-            NavigationService.NavigateAsync($"{nameof(NavigationPage)}/{nameof(SignInPage)}");
-            //NavigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(MainListPage)}");
+            if (SettingsManager.UserId == 0)
+            {
+                NavigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(SignInPage)}");
+            }
+            else
+            {
+                NavigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(MainListPage)}");
+            }
         }
 
         protected override void OnStart()

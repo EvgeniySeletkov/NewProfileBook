@@ -4,6 +4,7 @@ using Prism.Navigation;
 using ProfileBook.Models;
 using ProfileBook.Services.Authorization;
 using ProfileBook.Services.Repository;
+using ProfileBook.Services.Settings;
 using ProfileBook.Services.Validators;
 using ProfileBook.Views;
 using System;
@@ -75,13 +76,13 @@ namespace ProfileBook.ViewModels
         {
             if (validators.IsFirstSymbolDigit(Login))
             {
-                UserDialogs.Instance.Alert("Сообщение", "Сообщение об ошибке", "OK");
+                UserDialogs.Instance.Alert("First simbol doesn`t have to be digit in login!", "Alert", "OK");
                 ClearEntries();
                 return false;
             }
             if (!validators.IsCorrectLength(Login, 3))
             {
-                UserDialogs.Instance.Alert("Сообщение", "Сообщение об ошибке", "OK");
+                UserDialogs.Instance.Alert("Number of characters less than 3 or more than 20!", "Alert", "OK");
                 ClearEntries();
                 return false;
             }
@@ -92,28 +93,41 @@ namespace ProfileBook.ViewModels
         {
             if (!validators.IsPassAvailable(Password))
             {
-                UserDialogs.Instance.Alert("Сообщение", "Сообщение об ошибке", "OK");
+                UserDialogs.Instance.Alert("Must be a number, uppercase or lowercase letter!", "Alert", "OK");
                 ClearEntries();
                 return false;
             }
             if (!validators.ArePasswordsEquals(Password, ConfirmPassword))
             {
-                UserDialogs.Instance.Alert("Сообщение", "Сообщение об ошибке", "OK");
+                UserDialogs.Instance.Alert("Password and confirm password are not equal!", "Alert", "OK");
                 ClearEntries();
                 return false;
             }
             if (!validators.IsCorrectLength(Password, 6))
             {
-                UserDialogs.Instance.Alert("Сообщение", "Сообщение об ошибке", "OK");
+                UserDialogs.Instance.Alert("Number of characters less than 6 or more than 20!", "Alert", "OK");
                 ClearEntries();
                 return false;
             }
             return true;
         }
 
+        private bool EntriesAreEmpty()
+        {
+            if (string.IsNullOrWhiteSpace(Login) ||
+                string.IsNullOrWhiteSpace(Password) ||
+                string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                UserDialogs.Instance.Alert("One or more fields are empty!", "Alert", "OK");
+                return true;
+            }
+            return false;
+        }
+
         private UserModel CreateUser()
         {
             UserModel userModel = null;
+
             if (Login != Password)
             {
                 userModel = new UserModel()
@@ -124,7 +138,7 @@ namespace ProfileBook.ViewModels
             }
             else
             {
-                UserDialogs.Instance.Alert("Сообщение", "Сообщение об ошибке", "OK");
+                UserDialogs.Instance.Alert("Login and password don`t have to be equal!", "Alert", "OK");
                 ClearEntries();
             }
 
@@ -133,28 +147,27 @@ namespace ProfileBook.ViewModels
 
         private async void OnSignUpTap()
         {
-            if (IsLoginValidate() && IsPassValidate())
+            if (!EntriesAreEmpty())
             {
-                var isLoginBusy = await authorizationService.IsLoginBusy(Login);
-                if (isLoginBusy)
+                if (IsLoginValidate() && IsPassValidate())
                 {
-                    UserDialogs.Instance.Alert("Сообщение", "Сообщение об ошибке", "OK");
-                    ClearEntries();
-                }
-                else
-                {
-                    var userModel = CreateUser();
-                    if (userModel != null)
+                    var isLoginBusy = await authorizationService.IsLoginBusy(Login);
+                    if (isLoginBusy)
                     {
-                        authorizationService.SignUp(userModel);
-                        await navigationService.GoBackAsync();
+                        UserDialogs.Instance.Alert("This login is busy!", "Alert", "OK");
+                        ClearEntries();
+                    }
+                    else
+                    {
+                        var userModel = CreateUser();
+                        if (userModel != null)
+                        {
+                            authorizationService.SignUp(userModel);
+                            await navigationService.GoBackAsync();
+                        }
                     }
                 }
             }
-
-            //var userModel = CreateUser();
-            //authorizationService.SignUp(userModel);
-            //await navigationService.GoBackAsync();
 
         }
     }

@@ -3,6 +3,7 @@ using Prism.Navigation;
 using ProfileBook.Models;
 using ProfileBook.Services.Profile;
 using ProfileBook.Services.Repository;
+using ProfileBook.Services.Settings;
 using ProfileBook.Views;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace ProfileBook.ViewModels
     {
         private INavigationService navigationService;
         private IProfileService profileService;
+        private ISettingsManager settingsManager;
 
         private string title;
         public string Title
@@ -35,16 +37,18 @@ namespace ProfileBook.ViewModels
         }
 
         public MainListPageViewModel(INavigationService navigationService,
-                                     IProfileService profileService)
+                                     IProfileService profileService,
+                                     ISettingsManager settingsManager)
         {
             Title = "Main List";
             this.navigationService = navigationService;
             this.profileService = profileService;
+            this.settingsManager = settingsManager;
         }
 
         public async Task InitializeAsync(INavigationParameters parameters)
         {
-            var profileList = await profileService.GetAllProfiles(1);
+            var profileList = await profileService.GetAllProfiles(settingsManager.UserId);
 
             ProfileList = new ObservableCollection<ProfileModel>(profileList);
         }
@@ -75,8 +79,9 @@ namespace ProfileBook.ViewModels
 
         private async void OnSignOutTap()
         {
-            File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "profilebook.db3"));
-            //await navigationService.NavigateAsync($"{nameof(NavigationPage)}/{nameof(SignInPage)}");
+            //File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "profilebook.db3"));
+            settingsManager.UserId = 0;
+            await navigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(SignInPage)}");
         }
     }
 }

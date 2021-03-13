@@ -4,6 +4,8 @@ using Prism.Navigation;
 using ProfileBook.Models;
 using ProfileBook.Services.Profile;
 using ProfileBook.Services.Repository;
+using ProfileBook.Services.Settings;
+using ProfileBook.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -20,6 +22,7 @@ namespace ProfileBook.ViewModels
         private INavigationService navigationService;
         private IProfileService profileService;
         private IRepository repository;
+        private ISettingsManager settingsManager;
 
         private ProfileModel _profile;
 
@@ -71,11 +74,13 @@ namespace ProfileBook.ViewModels
 
         public AddProfilePageViewModel(INavigationService navigationService,
                                        IProfileService profileService,
-                                       IRepository repository)
+                                       IRepository repository,
+                                       ISettingsManager settingsManager)
         {
             this.navigationService = navigationService;
             this.profileService = profileService;
             this.repository = repository;
+            this.settingsManager = settingsManager;
             GalleryAction += TakePhotoFromGallery;
             CameraAction += TakePhotoWithCamera;
         }
@@ -102,7 +107,7 @@ namespace ProfileBook.ViewModels
             }
             catch (Exception ex)
             {
-                UserDialogs.Instance.Alert(ex.Message, "Сообщение об ошибке", "OK");
+                UserDialogs.Instance.Alert(ex.Message, "Alert", "OK");
             }
         }
 
@@ -126,8 +131,18 @@ namespace ProfileBook.ViewModels
             }
             catch (Exception ex)
             {
-                UserDialogs.Instance.Alert(ex.Message, "Сообщение об ошибке", "OK");
+                UserDialogs.Instance.Alert(ex.Message, "Alert", "OK");
             }
+        }
+
+        private bool NameEntryIsEmpty()
+        {
+            if (string.IsNullOrWhiteSpace(NickName))
+            {
+                UserDialogs.Instance.Alert("NickName field is empty!", "Alert", "OK");
+                return true;
+            }
+            return false;
         }
 
         private void CreateProfile()
@@ -139,7 +154,7 @@ namespace ProfileBook.ViewModels
                 Name = Name,
                 Description = Description,
                 Date = DateTime.Now,
-                UserId = 1
+                UserId = settingsManager.UserId
             };
         }
 
@@ -154,18 +169,22 @@ namespace ProfileBook.ViewModels
 
         private async void OnSaveProfileTap()
         {
-            if (_profile == null)
+            if (!NameEntryIsEmpty())
             {
-                CreateProfile();
-            }
-            else
-            {
-                EditProfile();
-            }
+                if (_profile == null)
+                {
+                    CreateProfile();
+                }
+                else
+                {
+                    EditProfile();
+                }
 
-            profileService.SaveProfile(_profile);
-            Thread.Sleep(100);
-            await navigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(Views.MainListPage)}");
+                profileService.SaveProfile(_profile);
+                Thread.Sleep(100);
+                await navigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(MainListPage)}");
+            }
+            
         }
 
         public void OnNavigatedFrom(INavigationParameters parameters)
