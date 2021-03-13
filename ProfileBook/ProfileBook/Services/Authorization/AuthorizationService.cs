@@ -22,8 +22,6 @@ namespace ProfileBook.Services.Authorization
             var users = await repository.GetAllAsync<UserModel>();
             var user = users.FirstOrDefault(x => x.Login == login);
 
-            //var user = await repository.GetAsync<UserModel>(x => x.Login == login);
-
             return user != null;
         }
 
@@ -31,8 +29,6 @@ namespace ProfileBook.Services.Authorization
         {
             var users = await repository.GetAllAsync<UserModel>();
             var user = users.FirstOrDefault(x => x.Login == login && x.Password == password);
-
-            //var user = await repository.GetAsync<UserModel>(x => x.Login == login && x.Password == password);
 
             return user != null;
         }

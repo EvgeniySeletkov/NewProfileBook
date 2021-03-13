@@ -44,7 +44,7 @@ namespace ProfileBook.ViewModels
 
         public async Task InitializeAsync(INavigationParameters parameters)
         {
-            var profileList = await profileService.GetAllProfiles();
+            var profileList = await profileService.GetAllProfiles(1);
 
             ProfileList = new ObservableCollection<ProfileModel>(profileList);
         }

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -129,40 +130,41 @@ namespace ProfileBook.ViewModels
             }
         }
 
-        private async void OnSaveProfileTap()
+        private void CreateProfile()
         {
-            //if (_profile == null)
-            //{
-            //    _profile = new ProfileModel()
-            //    {
-            //        Image = Image,
-            //        NickName = NickName,
-            //        Name = Name,
-            //        Description = Description,
-            //        Date = DateTime.Now
-            //    };
-            //}
-            //else
-            //{
-            //    _profile.Image = Image;
-            //    _profile.NickName = NickName;
-            //    _profile.Name = Name;
-            //    _profile.Description = Description;
-            //    _profile.Date = DateTime.Now;
-            //}
-
-            //profileService.SaveProfile(_profile);
-
             _profile = new ProfileModel()
             {
                 Image = Image,
                 NickName = NickName,
                 Name = Name,
                 Description = Description,
-                Date = DateTime.Now
+                Date = DateTime.Now,
+                UserId = 1
             };
+        }
 
-            await repository.InsertAsync(_profile);
+        private void EditProfile()
+        {
+            _profile.Image = Image;
+            _profile.NickName = NickName;
+            _profile.Name = Name;
+            _profile.Description = Description;
+            _profile.Date = DateTime.Now;
+        }
+
+        private async void OnSaveProfileTap()
+        {
+            if (_profile == null)
+            {
+                CreateProfile();
+            }
+            else
+            {
+                EditProfile();
+            }
+
+            profileService.SaveProfile(_profile);
+            Thread.Sleep(100);
             await navigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(Views.MainListPage)}");
         }
 

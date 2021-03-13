@@ -113,11 +113,20 @@ namespace ProfileBook.ViewModels
 
         private UserModel CreateUser()
         {
-            var userModel = new UserModel()
+            UserModel userModel = null;
+            if (Login != Password)
             {
-                Login = Login,
-                Password = Password
-            };
+                userModel = new UserModel()
+                {
+                    Login = Login,
+                    Password = Password
+                };
+            }
+            else
+            {
+                UserDialogs.Instance.Alert("Сообщение", "Сообщение об ошибке", "OK");
+                ClearEntries();
+            }
 
             return userModel;
         }
@@ -135,10 +144,17 @@ namespace ProfileBook.ViewModels
                 else
                 {
                     var userModel = CreateUser();
-                    authorizationService.SignUp(userModel);
-                    await navigationService.GoBackAsync();
+                    if (userModel != null)
+                    {
+                        authorizationService.SignUp(userModel);
+                        await navigationService.GoBackAsync();
+                    }
                 }
             }
+
+            //var userModel = CreateUser();
+            //authorizationService.SignUp(userModel);
+            //await navigationService.GoBackAsync();
 
         }
     }

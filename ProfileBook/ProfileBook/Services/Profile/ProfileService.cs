@@ -2,6 +2,7 @@
 using ProfileBook.Services.Repository;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -24,22 +25,23 @@ namespace ProfileBook.Services.Profile
             }
         }
 
-        // await and async
-        public void SaveProfile(ProfileModel profileModel)
+        public async void SaveProfile(ProfileModel profileModel)
         {
             if (profileModel.Id == 0)
             {
-                repository.InsertAsync(profileModel);
+                await repository.InsertAsync(profileModel);
             }
             else
             {
-                repository.UpdateAsync(profileModel);
+                await repository.UpdateAsync(profileModel);
             }
         }
 
-        public async Task<List<ProfileModel>> GetAllProfiles()
+        public async Task<List<ProfileModel>> GetAllProfiles(int userId)
         {
-            return await repository.GetAllAsync<ProfileModel>();
+            var profiles = await repository.GetAllAsync<ProfileModel>();
+            return profiles.Where(x => x.UserId == userId).ToList();
+            //return profiles;
         }
     }
 }

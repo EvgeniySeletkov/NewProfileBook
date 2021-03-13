@@ -8,7 +8,7 @@ namespace ProfileBook.Services.Profile
 {
     public interface IProfileService
     {
-        Task<List<ProfileModel>> GetAllProfiles();
+        Task<List<ProfileModel>> GetAllProfiles(int userId);
         void SaveProfile(ProfileModel profileModel);
         void DeleteProfile(ProfileModel profileModel);
     }
