@@ -1,5 +1,6 @@
 ﻿using Prism;
 using Prism.Ioc;
+using Prism.Plugin.Popups;
 using Prism.Unity;
 using ProfileBook.Services.Authorization;
 using ProfileBook.Services.Profile;
@@ -31,14 +32,15 @@ namespace ProfileBook
             containerRegistry.RegisterInstance<IAuthorizationService>(Container.Resolve<AuthorizationService>());
             containerRegistry.RegisterInstance<IProfileService>(Container.Resolve<ProfileService>());
             containerRegistry.RegisterInstance<IValidators>(Container.Resolve<Validators>());
-            
+
             //Navigation
+            containerRegistry.RegisterPopupNavigationService();
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<SignInPage, SignInPageViewModel>();
-            containerRegistry.RegisterForNavigation<MainListPage, MainListPageViewModel>();
-            //containerRegistry.RegisterForNavigation<MainPage, MainListPageViewModel>();
             containerRegistry.RegisterForNavigation<SignUpPage, SignUpPageViewModel>();
+            containerRegistry.RegisterForNavigation<MainListPage, MainListPageViewModel>();
             containerRegistry.RegisterForNavigation<AddProfilePage, AddProfilePageViewModel>();
+            containerRegistry.RegisterForNavigation<ProfileImagePage, ProfileImagePageViewModel>();
         }
 
         protected override void OnInitialized()

@@ -14,9 +14,9 @@
 
             <Button BackgroundColor="#CC6633" 
                     VerticalOptions="CenterAndExpand" 
-                    IsEnabled="False"
                     Text="SIGN UP"
-                    Command="{Binding SignUpTapCommand}" />
+                    Command="{Binding SignUpTapCommand}" 
+                    IsEnabled="{Binding EnabledButton}" />
             
         </StackLayout>
     </ContentPage.Content>

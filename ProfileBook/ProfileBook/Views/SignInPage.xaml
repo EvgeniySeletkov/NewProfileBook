@@ -17,9 +17,9 @@
             <StackLayout VerticalOptions="EndAndExpand">
                 
                 <Button BackgroundColor="#CC6633"
-                        IsEnabled="False"
                         Text="SIGN IN"
-                        Command="{Binding SignInTapCommand}" />
+                        Command="{Binding SignInTapCommand}"
+                        IsEnabled="{Binding EnabledButton}" />
                 
                 <Label HorizontalOptions="Center">
                     <Label.FormattedText>

@@ -41,9 +41,12 @@
                                     <StackLayout Orientation="Horizontal"
                                                  HorizontalOptions="FillAndExpand">
 
-                                        <Image HeightRequest="100"
+                                        <ImageButton HeightRequest="100"
                                                WidthRequest="100"
-                                               Source="{Binding Image}"/>
+                                               BackgroundColor="Transparent"
+                                               Source="{Binding Image}"
+                                               Command="{Binding Path=BindingContext.OpenImageTapCommand, Source={x:Reference profile}}"
+                                               CommandParameter="{Binding .}" />
                                         
                                         <StackLayout VerticalOptions="Center" 
                                                      Margin="10, 0, 0, 0">
@@ -62,10 +65,10 @@
                 </ListView>
             </ScrollView>
 
-            <Label IsVisible="True" 
-                   HorizontalOptions="Center"
+            <Label HorizontalOptions="Center"
                    VerticalOptions="Center"
-                   Text="No profiles added"/>
+                   Text="No profiles added"
+                   IsVisible="{Binding HaveNoProfiles}" />
 
             <ImageButton Grid.Row="0" WidthRequest="85"
                          HorizontalOptions="End" VerticalOptions="End"

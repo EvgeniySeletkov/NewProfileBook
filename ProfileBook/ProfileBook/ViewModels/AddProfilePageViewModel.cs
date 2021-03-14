@@ -19,18 +19,51 @@ namespace ProfileBook.ViewModels
 {
     class AddProfilePageViewModel : BindableBase, INavigationAware
     {
+        private ProfileModel _profile;
         private INavigationService navigationService;
         private IProfileService profileService;
         private IRepository repository;
         private ISettingsManager settingsManager;
+        private Action GalleryAction;
+        private Action CameraAction;
 
-        private ProfileModel _profile;
+        public AddProfilePageViewModel(INavigationService navigationService,
+                                       IProfileService profileService,
+                                       IRepository repository,
+                                       ISettingsManager settingsManager)
+        {
+            this.navigationService = navigationService;
+            this.profileService = profileService;
+            this.repository = repository;
+            this.settingsManager = settingsManager;
+            GalleryAction += TakePhotoFromGallery;
+            CameraAction += TakePhotoWithCamera;
+        }
+
+        #region --- Public Properties ---
 
         private string title;
         public string Title
         {
             get => title;
             set => SetProperty(ref title, value);
+        }
+
+        private string image;
+        public string Image
+        {
+            get
+            {
+                if (image == null)
+                {
+                    return "pic_profile.png";
+                }
+                else
+                {
+                    return image;
+                }
+            }
+            set => SetProperty(ref image, value);
         }
 
         private string nickName;
@@ -54,49 +87,39 @@ namespace ProfileBook.ViewModels
             set => SetProperty(ref description, value);
         }
 
-        private string image;
-        public string Image
-        {
-            get
-            {
-                if (image == null)
-                {
-                    return "pic_profile.png";
-                }
-                else
-                {
-                    return image;
-                }
-            }
-            set => SetProperty(ref image, value);
-        }
-
-
-        public AddProfilePageViewModel(INavigationService navigationService,
-                                       IProfileService profileService,
-                                       IRepository repository,
-                                       ISettingsManager settingsManager)
-        {
-            this.navigationService = navigationService;
-            this.profileService = profileService;
-            this.repository = repository;
-            this.settingsManager = settingsManager;
-            GalleryAction += TakePhotoFromGallery;
-            CameraAction += TakePhotoWithCamera;
-        }
-
         public ICommand PickImageCommand => new Command(OnPickImage);
         public ICommand SaveProfileTapCommand => new Command(OnSaveProfileTap);
-        public Action GalleryAction;
-        public Action CameraAction;
 
-        private void OnPickImage()
+        #endregion
+
+        #region --- Public Methods ---
+
+        public void OnNavigatedFrom(INavigationParameters parameters)
         {
-            UserDialogs.Instance.ActionSheet(new ActionSheetConfig().
-                SetTitle("Title").
-                Add("Gallery", GalleryAction, "ic_collections_black.png").
-                Add("Camera", CameraAction, "ic_camera_alt_black.png"));
+            throw new NotImplementedException();
         }
+
+        public virtual void OnNavigatedTo(INavigationParameters parameters)
+        {
+            var profile = parameters.GetValue<ProfileModel>("profile");
+            if (profile != null)
+            {
+                Title = "Edit Profile";
+                _profile = profile;
+                Image = profile.Image;
+                NickName = profile.NickName;
+                Name = profile.Name;
+                Description = profile.Description;
+            }
+            else
+            {
+                Title = "Add Profile";
+            }
+        }
+
+        #endregion
+
+        #region --- Private Methods ---
 
         private async void TakePhotoFromGallery()
         {
@@ -135,11 +158,12 @@ namespace ProfileBook.ViewModels
             }
         }
 
-        private bool NameEntryIsEmpty()
+        private bool EntriesAreEmpty()
         {
-            if (string.IsNullOrWhiteSpace(NickName))
+            if (string.IsNullOrWhiteSpace(NickName) ||
+                string.IsNullOrWhiteSpace(Name))
             {
-                UserDialogs.Instance.Alert("NickName field is empty!", "Alert", "OK");
+                UserDialogs.Instance.Alert("NickName or Name field is empty!", "Alert", "OK");
                 return true;
             }
             return false;
@@ -167,9 +191,21 @@ namespace ProfileBook.ViewModels
             _profile.Date = DateTime.Now;
         }
 
+        #endregion
+
+        #region --- Private Helpers ---
+
+        private void OnPickImage()
+        {
+            UserDialogs.Instance.ActionSheet(new ActionSheetConfig().
+                SetTitle("Title").
+                Add("Gallery", GalleryAction, "ic_collections_black.png").
+                Add("Camera", CameraAction, "ic_camera_alt_black.png"));
+        }
+
         private async void OnSaveProfileTap()
         {
-            if (!NameEntryIsEmpty())
+            if (!EntriesAreEmpty())
             {
                 if (_profile == null)
                 {
@@ -187,27 +223,7 @@ namespace ProfileBook.ViewModels
             
         }
 
-        public void OnNavigatedFrom(INavigationParameters parameters)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
 
-        public virtual void OnNavigatedTo(INavigationParameters parameters)
-        {
-            var profile = parameters.GetValue<ProfileModel>("profile");
-            if (profile != null)
-            {
-                Title = "Edit Profile";
-                _profile = profile;
-                Image = profile.Image;
-                NickName = profile.NickName;
-                Name = profile.Name;
-                Description = profile.Description;
-            }
-            else
-            {
-                Title = "Add Profile";
-            }
-        }
     }
 }

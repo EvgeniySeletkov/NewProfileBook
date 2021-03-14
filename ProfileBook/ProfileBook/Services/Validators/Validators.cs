@@ -18,7 +18,7 @@ namespace ProfileBook.Services.Validators
 
         public bool IsCorrectLength(string item, int minLength)
         {
-            var hasCorrectLength = new Regex(@"^.{" + $"{minLength}" + ",20}$");
+            var hasCorrectLength = new Regex(@"^.{" + $"{minLength}" + ",16}$");
 
             if (hasCorrectLength.IsMatch(item))
             {

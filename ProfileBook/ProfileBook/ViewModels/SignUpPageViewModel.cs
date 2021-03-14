@@ -21,38 +21,6 @@ namespace ProfileBook.ViewModels
         IAuthorizationService authorizationService;
         IValidators validators;
 
-        private string title;
-
-        public string Title
-        {
-            get => title;
-            set => SetProperty(ref title, value);
-        }
-
-        private string login;
-
-        public string Login
-        {
-            get => login;
-            set => SetProperty(ref login, value);
-        }
-
-        private string password;
-
-        public string Password
-        {
-            get => password;
-            set => SetProperty(ref password, value);
-        }
-
-        private string confirmPassword;
-
-        public string ConfirmPassword
-        {
-            get => confirmPassword;
-            set => SetProperty(ref confirmPassword, value);
-        }
-
         public SignUpPageViewModel(INavigationService navigationService,
                                    IAuthorizationService authorizationService,
                                    IValidators validators)
@@ -63,7 +31,74 @@ namespace ProfileBook.ViewModels
             this.validators = validators;
         }
 
+        #region --- Public Properties ---
+
+        private string title;
+        public string Title
+        {
+            get => title;
+            set => SetProperty(ref title, value);
+        }
+
+        private string login;
+        public string Login
+        {
+            get => login;
+            set
+            {
+                SetProperty(ref login, value);
+                CheckEntries();
+            }
+        }
+
+        private string password;
+        public string Password
+        {
+            get => password;
+            set
+            {
+                SetProperty(ref password, value);
+                CheckEntries();
+            }
+        }
+
+        private string confirmPassword;
+        public string ConfirmPassword
+        {
+            get => confirmPassword;
+            set
+            {
+                SetProperty(ref confirmPassword, value);
+                CheckEntries();
+            }
+        }
+
+        private bool enabledButton = false;
+        public bool EnabledButton
+        {
+            get => enabledButton;
+            set => SetProperty(ref enabledButton, value);
+        }
+
         public ICommand SignUpTapCommand => new Command(OnSignUpTap);
+
+        #endregion
+
+        #region --- Private Methods ---
+
+        private void CheckEntries()
+        {
+            if (string.IsNullOrWhiteSpace(Login) ||
+                string.IsNullOrWhiteSpace(Password) ||
+                string.IsNullOrWhiteSpace(confirmPassword))
+            {
+                EnabledButton = false;
+            }
+            else
+            {
+                EnabledButton = true;
+            }
+        }
 
         private void ClearEntries()
         {
@@ -80,9 +115,9 @@ namespace ProfileBook.ViewModels
                 ClearEntries();
                 return false;
             }
-            if (!validators.IsCorrectLength(Login, 3))
+            if (!validators.IsCorrectLength(Login, 4))
             {
-                UserDialogs.Instance.Alert("Number of characters less than 3 or more than 20!", "Alert", "OK");
+                UserDialogs.Instance.Alert("Number of characters less than 4 or more than 16!", "Alert", "OK");
                 ClearEntries();
                 return false;
             }
@@ -93,35 +128,23 @@ namespace ProfileBook.ViewModels
         {
             if (!validators.IsPassAvailable(Password))
             {
-                UserDialogs.Instance.Alert("Must be a number, uppercase or lowercase letter!", "Alert", "OK");
+                UserDialogs.Instance.Alert("Must have a number, uppercase and lowercase letters!", "Alert", "OK");
+                ClearEntries();
+                return false;
+            }
+            if (!validators.IsCorrectLength(Password, 8))
+            {
+                UserDialogs.Instance.Alert("Number of characters less than 8 or more than 16!", "Alert", "OK");
                 ClearEntries();
                 return false;
             }
             if (!validators.ArePasswordsEquals(Password, ConfirmPassword))
             {
-                UserDialogs.Instance.Alert("Password and confirm password are not equal!", "Alert", "OK");
-                ClearEntries();
-                return false;
-            }
-            if (!validators.IsCorrectLength(Password, 6))
-            {
-                UserDialogs.Instance.Alert("Number of characters less than 6 or more than 20!", "Alert", "OK");
+                UserDialogs.Instance.Alert("Password and confirm password must equal!", "Alert", "OK");
                 ClearEntries();
                 return false;
             }
             return true;
-        }
-
-        private bool EntriesAreEmpty()
-        {
-            if (string.IsNullOrWhiteSpace(Login) ||
-                string.IsNullOrWhiteSpace(Password) ||
-                string.IsNullOrWhiteSpace(confirmPassword))
-            {
-                UserDialogs.Instance.Alert("One or more fields are empty!", "Alert", "OK");
-                return true;
-            }
-            return false;
         }
 
         private UserModel CreateUser()
@@ -145,30 +168,33 @@ namespace ProfileBook.ViewModels
             return userModel;
         }
 
+        #endregion
+
+        #region --- Private Helpers ---
+
         private async void OnSignUpTap()
         {
-            if (!EntriesAreEmpty())
+            if (IsLoginValidate() && IsPassValidate())
             {
-                if (IsLoginValidate() && IsPassValidate())
+                var isLoginBusy = await authorizationService.IsLoginBusy(Login);
+                if (isLoginBusy)
                 {
-                    var isLoginBusy = await authorizationService.IsLoginBusy(Login);
-                    if (isLoginBusy)
+                    UserDialogs.Instance.Alert("This login is busy!", "Alert", "OK");
+                    ClearEntries();
+                }
+                else
+                {
+                    var userModel = CreateUser();
+                    if (userModel != null)
                     {
-                        UserDialogs.Instance.Alert("This login is busy!", "Alert", "OK");
-                        ClearEntries();
-                    }
-                    else
-                    {
-                        var userModel = CreateUser();
-                        if (userModel != null)
-                        {
-                            authorizationService.SignUp(userModel);
-                            await navigationService.GoBackAsync();
-                        }
+                        authorizationService.SignUp(userModel);
+                        await navigationService.GoBackAsync();
                     }
                 }
             }
-
         }
+
+        #endregion
+
     }
 }
