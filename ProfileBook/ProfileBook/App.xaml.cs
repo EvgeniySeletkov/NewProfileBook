@@ -2,6 +2,7 @@
 using Prism.Ioc;
 using Prism.Plugin.Popups;
 using Prism.Unity;
+using ProfileBook.Resources;
 using ProfileBook.Services.Authorization;
 using ProfileBook.Services.Profile;
 using ProfileBook.Services.Repository;
@@ -10,6 +11,8 @@ using ProfileBook.Services.Validators;
 using ProfileBook.ViewModels;
 using ProfileBook.Views;
 using System;
+using System.Globalization;
+using System.Threading;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,9 +20,9 @@ namespace ProfileBook
 {
     public partial class App : PrismApplication
     {
-        private ISettingsManager _settingsManager;
-        private ISettingsManager SettingsManager =>
-            _settingsManager ??= Container.Resolve<ISettingsManager>();
+        private Services.Settings.ISettingsManager _settingsManager;
+        private Services.Settings.ISettingsManager SettingsManager =>
+            _settingsManager ??= Container.Resolve<Services.Settings.ISettingsManager>();
         public App(IPlatformInitializer initializer = null) : base(initializer) { }
 
         #region --- Overrides ---
@@ -27,7 +30,7 @@ namespace ProfileBook
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
             //Services
-            containerRegistry.RegisterInstance<ISettingsManager>(Container.Resolve<SettingsManager>());
+            containerRegistry.RegisterInstance<Services.Settings.ISettingsManager>(Container.Resolve<SettingsManager>());
             containerRegistry.RegisterInstance<IRepository>(Container.Resolve<Repository>());
             containerRegistry.RegisterInstance<IAuthorizationService>(Container.Resolve<AuthorizationService>());
             containerRegistry.RegisterInstance<IProfileService>(Container.Resolve<ProfileService>());
@@ -40,12 +43,18 @@ namespace ProfileBook
             containerRegistry.RegisterForNavigation<SignUpPage, SignUpPageViewModel>();
             containerRegistry.RegisterForNavigation<MainListPage, MainListPageViewModel>();
             containerRegistry.RegisterForNavigation<AddProfilePage, AddProfilePageViewModel>();
+            containerRegistry.RegisterForNavigation<SettingsPage, SettingsPageViewModel>();
             containerRegistry.RegisterForNavigation<ProfileImagePage, ProfileImagePageViewModel>();
         }
 
         protected override void OnInitialized()
         {
             InitializeComponent();
+
+            var cultureInfo = new CultureInfo(SettingsManager.Culture, false);
+
+            //Thread.CurrentThread.CurrentUICulture = cultureInfo;
+            Resource.Culture = cultureInfo;
 
             if (SettingsManager.UserId == 0)
             {

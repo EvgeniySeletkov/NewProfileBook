@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using Prism.Navigation;
 using ProfileBook.Models;
+using ProfileBook.Resources;
 using ProfileBook.Services.Authorization;
 using ProfileBook.Services.Repository;
 using ProfileBook.Services.Settings;
@@ -107,17 +108,22 @@ namespace ProfileBook.ViewModels
             ConfirmPassword = string.Empty;
         }
 
+        private void ShowAlert(string msg)
+        {
+            UserDialogs.Instance.Alert(msg, Resource.Alert, "OK");
+        }
+
         private bool IsLoginValidate()
         {
             if (validators.IsFirstSymbolDigit(Login))
             {
-                UserDialogs.Instance.Alert("First simbol doesn`t have to be digit in login!", "Alert", "OK");
+                ShowAlert(Resource.IsFirstSymbolDigit);
                 ClearEntries();
                 return false;
             }
             if (!validators.IsCorrectLength(Login, 4))
             {
-                UserDialogs.Instance.Alert("Number of characters less than 4 or more than 16!", "Alert", "OK");
+                ShowAlert(Resource.HasLoginCorrectLength);
                 ClearEntries();
                 return false;
             }
@@ -128,19 +134,19 @@ namespace ProfileBook.ViewModels
         {
             if (!validators.IsPassAvailable(Password))
             {
-                UserDialogs.Instance.Alert("Must have a number, uppercase and lowercase letters!", "Alert", "OK");
+                ShowAlert(Resource.IsPassAvailable);
                 ClearEntries();
                 return false;
             }
             if (!validators.IsCorrectLength(Password, 8))
             {
-                UserDialogs.Instance.Alert("Number of characters less than 8 or more than 16!", "Alert", "OK");
+                ShowAlert(Resource.HasPassCorrectLength);
                 ClearEntries();
                 return false;
             }
             if (!validators.ArePasswordsEquals(Password, ConfirmPassword))
             {
-                UserDialogs.Instance.Alert("Password and confirm password must equal!", "Alert", "OK");
+                ShowAlert(Resource.ArePasswordsEquals);
                 ClearEntries();
                 return false;
             }
@@ -161,7 +167,7 @@ namespace ProfileBook.ViewModels
             }
             else
             {
-                UserDialogs.Instance.Alert("Login and password don`t have to be equal!", "Alert", "OK");
+                ShowAlert(Resource.AreLogAndPassEquals);
                 ClearEntries();
             }
 
@@ -179,7 +185,7 @@ namespace ProfileBook.ViewModels
                 var isLoginBusy = await authorizationService.IsLoginBusy(Login);
                 if (isLoginBusy)
                 {
-                    UserDialogs.Instance.Alert("This login is busy!", "Alert", "OK");
+                    ShowAlert(Resource.IsLoginBusy);
                     ClearEntries();
                 }
                 else

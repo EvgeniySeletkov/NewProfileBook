@@ -33,11 +33,6 @@ namespace ProfileBook.Services.Repository
             return _database.Value.DeleteAsync(entity);
         }
 
-        //public Task<T> GetAsync<T>(Expression<Func<T, bool>> predicate) where T : IEntityBase, new()
-        //{
-        //    return _database.Value.FindAsync(predicate);
-        //}
-
         public Task<List<T>> GetAllAsync<T>() where T : IEntityBase, new()
         {
             return _database.Value.Table<T>().ToListAsync();

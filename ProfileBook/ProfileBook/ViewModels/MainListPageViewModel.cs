@@ -1,5 +1,6 @@
 ﻿using Prism.Mvvm;
 using Prism.Navigation;
+using ProfileBook.Enums;
 using ProfileBook.Models;
 using ProfileBook.Services.Profile;
 using ProfileBook.Services.Repository;
@@ -24,11 +25,11 @@ namespace ProfileBook.ViewModels
     {
         private INavigationService navigationService;
         private IProfileService profileService;
-        private ISettingsManager settingsManager;
+        private Services.Settings.ISettingsManager settingsManager;
 
         public MainListPageViewModel(INavigationService navigationService,
                                      IProfileService profileService,
-                                     ISettingsManager settingsManager)
+                                     Services.Settings.ISettingsManager settingsManager)
         {
             Title = "Main List";
             this.navigationService = navigationService;
@@ -68,8 +69,9 @@ namespace ProfileBook.ViewModels
         public ICommand AddProfileTapCommand => new Command(OnAddProfileTap);
         public ICommand EditProfileTapCommand => new Command<ProfileModel>(OnEditProfileTap);
         public ICommand DeleteProfileTapCommand => new Command<ProfileModel>(OnDeleteProfileTap);
-        public ICommand SignOutTapCommand => new Command(OnSignOutTap);
         public ICommand OpenImageTapCommand => new Command<ProfileModel>(OnOpenImageTap);
+        public ICommand SettingsTapCommand => new Command(OnSettingsTap);
+        public ICommand SignOutTapCommand => new Command(OnSignOutTap);
 
         #endregion
 
@@ -77,7 +79,7 @@ namespace ProfileBook.ViewModels
 
         public async Task InitializeAsync(INavigationParameters parameters)
         {
-            var profileList = await profileService.GetAllProfiles(settingsManager.UserId);
+            var profileList = await profileService.SortProfiles((SortOption)settingsManager.Sort);
 
             ProfileList = new ObservableCollection<ProfileModel>(profileList);
 
@@ -136,9 +138,13 @@ namespace ProfileBook.ViewModels
                                                   animated: true);
         }
 
+        private async void OnSettingsTap(object obj)
+        {
+            await navigationService.NavigateAsync($"{nameof(SettingsPage)}");
+        }
+
         private async void OnSignOutTap()
         {
-            //File.Delete(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "profilebook.db3"));
             settingsManager.UserId = 0;
             await navigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(SignInPage)}");
         }

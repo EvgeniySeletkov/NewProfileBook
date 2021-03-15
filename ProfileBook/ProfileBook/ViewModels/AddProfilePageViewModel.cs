@@ -23,14 +23,14 @@ namespace ProfileBook.ViewModels
         private INavigationService navigationService;
         private IProfileService profileService;
         private IRepository repository;
-        private ISettingsManager settingsManager;
+        private Services.Settings.ISettingsManager settingsManager;
         private Action GalleryAction;
         private Action CameraAction;
 
         public AddProfilePageViewModel(INavigationService navigationService,
                                        IProfileService profileService,
                                        IRepository repository,
-                                       ISettingsManager settingsManager)
+                                       Services.Settings.ISettingsManager settingsManager)
         {
             this.navigationService = navigationService;
             this.profileService = profileService;
