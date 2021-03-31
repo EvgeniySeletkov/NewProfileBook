@@ -1,0 +1,81 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<prism:PrismApplication xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:prism="clr-namespace:Prism.Unity;assembly=Prism.Unity.Forms"
+             x:Class="ProfileBook.App">
+    <prism:PrismApplication.Resources>
+
+        <Color x:Key="NavigationBarLightColor">#2296F3</Color>
+        <Color x:Key="NavigationBarDarkColor">#276899</Color>
+        <Color x:Key="PageLightColor">#FAFAFA</Color>
+        <Color x:Key="PageDarkColor">#0E1621</Color>
+        <Color x:Key="SignButtonLightColor">#CC6632</Color>
+        <Color x:Key="SignButtonDarkColor">#FF9C14</Color>
+        <Color x:Key="SignButtonBorderLightColor">Black</Color>
+        <Color x:Key="SignButtonBorderDarkColor">White</Color>
+        <Color x:Key="SignUpButtonLightColor">Blue</Color>
+        <Color x:Key="SignUpButtonDarkColor">#2294F3</Color>
+        <Color x:Key="EntryBackgroundLightColor"></Color>
+        <Color x:Key="EntryBackgroundDarkColor">#242F3D</Color>
+        <Color x:Key="EditorBackgroundLightColor">#D3D3D3</Color>
+        <Color x:Key="EditorBackgroundDarkColor">#242F3D</Color>
+        <Color x:Key="PlaceholderLightColor"></Color>
+        <Color x:Key="PlaceholderDarkColor">SlateGray</Color>
+        <Color x:Key="TextLightColor">Black</Color>
+        <Color x:Key="TextDarkColor">White</Color>
+
+        <Style TargetType="NavigationPage">
+            <Setter Property="BarBackgroundColor" 
+                    Value="{AppThemeBinding Light={StaticResource NavigationBarLightColor}, 
+                                            Dark={StaticResource NavigationBarDarkColor}}"/>
+        </Style>
+
+        <Style x:Key="PageStyle" TargetType="ContentPage">
+            <Setter Property="BackgroundColor" 
+                    Value="{AppThemeBinding Light={StaticResource PageLightColor},
+                                            Dark={StaticResource PageDarkColor}}"/>
+        </Style>
+
+        <Style x:Key="EntryStyle" TargetType="Entry">
+            <Setter Property="BackgroundColor" 
+                    Value="{AppThemeBinding Dark={StaticResource EntryBackgroundDarkColor}}"/>
+            <Setter Property="PlaceholderColor" 
+                    Value="{AppThemeBinding Dark={StaticResource PlaceholderDarkColor}}" />
+            <Setter Property="TextColor" 
+                    Value="{AppThemeBinding Dark={StaticResource TextDarkColor}}" />
+        </Style>
+
+        <Style x:Key="EditorStyle" TargetType="Editor">
+            <Setter Property="BackgroundColor" 
+                    Value="{AppThemeBinding Light={StaticResource EditorBackgroundDarkColor},
+                                            Dark={StaticResource EditorBackgroundDarkColor}}"/>
+            <Setter Property="PlaceholderColor" 
+                    Value="{AppThemeBinding Dark={StaticResource PlaceholderDarkColor}}" />
+            <Setter Property="TextColor" 
+                    Value="{AppThemeBinding Dark={StaticResource TextDarkColor}}" />
+        </Style>
+
+        <Style x:Key="SignButtonStyle" TargetType="Button">
+            <Setter Property="BackgroundColor" 
+                    Value="{AppThemeBinding Light={StaticResource SignButtonLightColor},
+                                            Dark={StaticResource SignButtonDarkColor}}"/>
+            <Setter Property="BorderWidth" 
+                    Value="0.1" />
+            <Setter Property="BorderColor" 
+                    Value="{AppThemeBinding Light={StaticResource SignButtonBorderLightColor},
+                                            Dark={StaticResource SignButtonBorderDarkColor}}" />
+        </Style>
+
+        <Style x:Key="SignUpButtonStyle" TargetType="Label">
+            <Setter Property="TextColor" 
+                    Value="{AppThemeBinding Light={StaticResource SignUpButtonLightColor},
+                                            Dark={StaticResource SignUpButtonDarkColor}}"/>
+        </Style>
+
+        <Style x:Key="TextStyle" TargetType="Label">
+            <Setter Property="TextColor" 
+                    Value="{AppThemeBinding Dark={StaticResource TextDarkColor}}"/>
+        </Style>
+
+    </prism:PrismApplication.Resources>
+</prism:PrismApplication>
