@@ -45,13 +45,13 @@
                 </FlexLayout>
 
                 <FlexLayout Direction="Row" FlexLayout.Grow="1">
-                    <RadioButton GroupName="Theme" IsChecked="True" />
+                    <RadioButton GroupName="Theme" IsChecked="{Binding IsLight}" />
                     <Label Text="{x:Static resource:Resource.LightTheme}"
                            VerticalTextAlignment="Center"/>
                 </FlexLayout>
 
                 <FlexLayout Direction="Row" FlexLayout.Grow="1">
-                    <RadioButton GroupName="Theme" />
+                    <RadioButton GroupName="Theme" IsChecked="{Binding IsDark}"/>
                     <Label Text="{x:Static resource:Resource.DarkTheme}"
                            VerticalTextAlignment="Center"/>
                 </FlexLayout>

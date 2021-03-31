@@ -52,8 +52,6 @@ namespace ProfileBook
             InitializeComponent();
 
             var cultureInfo = new CultureInfo(SettingsManager.Culture, false);
-
-            //Thread.CurrentThread.CurrentUICulture = cultureInfo;
             Resource.Culture = cultureInfo;
 
             if (SettingsManager.UserId == 0)
@@ -64,6 +62,8 @@ namespace ProfileBook
             {
                 NavigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(MainListPage)}");
             }
+
+            Application.Current.UserAppTheme = (OSAppTheme)Enum.Parse(typeof(OSAppTheme), SettingsManager.Theme);
         }
 
         protected override void OnStart()

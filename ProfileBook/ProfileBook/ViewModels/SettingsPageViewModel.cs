@@ -96,6 +96,7 @@ namespace ProfileBook.ViewModels
         {
             ActivateSortControls();
             ActivateLanguageControls();
+            ActivateThemeControls();
         }
 
         #endregion
@@ -121,7 +122,7 @@ namespace ProfileBook.ViewModels
 
         private void ActivateLanguageControls()
         {
-            LanguageOption language = (LanguageOption)Enum.Parse(typeof(LanguageOption), settingsManager.Culture);
+            var language = (LanguageOption)Enum.Parse(typeof(LanguageOption), settingsManager.Culture);
 
             switch (language)
             {
@@ -130,6 +131,21 @@ namespace ProfileBook.ViewModels
                     break;
                 case LanguageOption.ru:
                     IsRussian = true;
+                    break;
+            }
+        }
+
+        private void ActivateThemeControls()
+        {
+            var theme = (OSAppTheme)Enum.Parse(typeof(OSAppTheme), settingsManager.Theme);
+
+            switch (theme)
+            {
+                case OSAppTheme.Light:
+                    IsLight = true;
+                    break;
+                case OSAppTheme.Dark:
+                    IsDark = true;
                     break;
             }
         }
@@ -165,6 +181,20 @@ namespace ProfileBook.ViewModels
             Resource.Culture = cultureInfo;
         }
 
+        private void SaveThemeSettings()
+        {
+            if (IsLight == true)
+            {
+                settingsManager.Theme = (OSAppTheme.Light).ToString();
+            }
+            if (IsDark == true)
+            {
+                settingsManager.Theme = (OSAppTheme.Dark).ToString();
+            }
+
+            Application.Current.UserAppTheme = (OSAppTheme)Enum.Parse(typeof(OSAppTheme), settingsManager.Theme);
+        }
+
         #endregion
 
         #region --- Private Helpers ---
@@ -173,6 +203,7 @@ namespace ProfileBook.ViewModels
         {
             SaveSortSettings();
             SaveLanguageSettings();
+            SaveThemeSettings();
 
             await navigationService.NavigateAsync($"/{nameof(NavigationPage)}/{nameof(MainListPage)}");
         }

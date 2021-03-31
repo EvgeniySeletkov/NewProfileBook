@@ -10,5 +10,6 @@ namespace ProfileBook.Services.Settings
         int UserId { get; set; }
         int Sort { get; set; }
         string Culture { get; set; }
+        string Theme { get; set; }
     }
 }

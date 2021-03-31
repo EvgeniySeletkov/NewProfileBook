@@ -5,6 +5,7 @@
              xmlns:resource="clr-namespace:ProfileBook.Resources"
              x:Class="ProfileBook.Views.MainListPage"
              x:Name="profile"
+             Style="{StaticResource PageStyle}"
              Title="{x:Static resource:Resource.MainListPageTitle}">
 
     <ContentPage.ToolbarItems>
@@ -52,10 +53,13 @@
                                         
                                         <StackLayout VerticalOptions="Center" 
                                                      Margin="10, 0, 0, 0">
-                                            <Label FontAttributes="Bold"
+                                            <Label Style="{StaticResource TextStyle}"
+                                                   FontAttributes="Bold"
                                                    Text="{Binding NickName}" />
-                                            <Label Text="{Binding Name}" />
-                                            <Label Text="{Binding Date}" />
+                                            <Label Style="{StaticResource TextStyle}"
+                                                   Text="{Binding Name}" />
+                                            <Label Style="{StaticResource TextStyle}"
+                                                   Text="{Binding Date}" />
                                         </StackLayout>
                                         
                                     </StackLayout>
@@ -67,7 +71,8 @@
                 </ListView>
             </ScrollView>
 
-            <Label HorizontalOptions="Center"
+            <Label Style="{StaticResource TextStyle}" 
+                   HorizontalOptions="Center"
                    VerticalOptions="Center"
                    Text="No profiles added"
                    IsVisible="{Binding HaveNoProfiles}" />

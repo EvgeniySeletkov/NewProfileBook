@@ -21,8 +21,13 @@ namespace ProfileBook.Services.Settings
         }
         public string Culture
         {
-            get => Preferences.Get(nameof(Culture), (LanguageOption.ru).ToString());
+            get => Preferences.Get(nameof(Culture), (LanguageOption.en).ToString());
             set => Preferences.Set(nameof(Culture), value);
+        }
+        public string Theme
+        {
+            get => Preferences.Get(nameof(Theme), (OSAppTheme.Light).ToString());
+            set => Preferences.Set(nameof(Theme), value);
         }
     }
 }

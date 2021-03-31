@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:resource="clr-namespace:ProfileBook.Resources"
              x:Class="ProfileBook.Views.AddProfilePage"
+             Style="{StaticResource PageStyle}"
              Title="{x:Static resource:Resource.AddProfilePageTitle}">
     <ContentPage.ToolbarItems>
         <ToolbarItem IconImageSource="ic_save.png" 
@@ -17,13 +18,15 @@
                          Source="{Binding Image}"
                          Command="{Binding PickImageCommand}" />
 
-            <Entry Placeholder="{x:Static resource:Resource.NickName}"
+            <Entry Style="{StaticResource EntryStyle}"
+                   Placeholder="{x:Static resource:Resource.NickName}"
                    Text="{Binding NickName}" />
-            <Entry Placeholder="{x:Static resource:Resource.Name}" 
+            <Entry Style="{StaticResource EntryStyle}"
+                   Placeholder="{x:Static resource:Resource.Name}"
                    Text="{Binding Name}" />
-            <Editor Placeholder="{x:Static resource:Resource.Description}" 
-                    HeightRequest="160" 
-                    BackgroundColor="#D3D3D3"
+            <Editor Style="{StaticResource EditorStyle}"
+                    Placeholder="{x:Static resource:Resource.Description}" 
+                    HeightRequest="160"
                     Text="{Binding Description}" />
             
         </StackLayout>
